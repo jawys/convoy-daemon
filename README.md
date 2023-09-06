@@ -1,20 +1,16 @@
 # convoy-daemon
 
-Runs [convoy](https://github.com/rancher/convoy) in a container.
+**Opinionated** install of [convoy](https://github.com/rancher/convoy) daemon under SYSTEMD.
 
-# Usage
+## prerequisites
 
-The container needs to be able to configure itself as a plugin and communicate with the docker socket.
+- Docker
+- NFS Server
 
-E.g. to use the VFS/NFS backend:
+## install
 
-```bash
-docker run -d -v /var/run/docker.sock:/var/run/docker.sock -v /etc/docker/plugins:/etc/docker/plugins -v /opt/storage:/opt/storage evansgp/convoy-daemon daemon --drivers vfs --driver-opts vfs.path=/opt/storage/convoy-volumes
-```
+Paste this into your server's terminal and follow the logged instructions.
 
-# Extra
-
-```bash
-alias convoy='docker exec convoy-nfs convoy'
-convoy list
+```console
+# curl -fsSL https://raw.githubusercontent.com/jawys/convoy-daemon/master/convoy-install | bash -
 ```
