@@ -11,7 +11,7 @@ CONVOY_VFS_PATH=/mnt/convoy
 INSTALL_DIR=/usr/local/bin
 
 SYSTEMD_DIR=/lib/systemd/system
-SYSTEMD_FILENAME=docker-volume-plugin-convoy
+SYSTEMD_FILENAME=convoy
 SYSTEMD_SERVICE_FILE=${SYSTEMD_FILENAME}.service
 SYSTEMD_SOCKET_FILE=${SYSTEMD_FILENAME}.socket
 
