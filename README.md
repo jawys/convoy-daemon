@@ -12,5 +12,5 @@
 Paste this into your server's terminal and follow the logged instructions.
 
 ```console
-# curl -fsSL https://raw.githubusercontent.com/jawys/convoy-daemon/master/convoy-install | bash -
+# curl -fsSL https://raw.githubusercontent.com/jawys/convoy-daemon/master/install | bash -
 ```
