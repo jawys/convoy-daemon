@@ -6,7 +6,7 @@ log() {
 
 DOCKER_PLUGINS_DIR=/etc/docker/plugins
 
-CONVOY_SOCKET_DIR=/run/docker/plugins/convoy
+CONVOY_SOCKET_DIR=/var/run/convoy
 CONVOY_SPEC_FILE="${DOCKER_PLUGINS_DIR}"/convoy.spec
 CONVOY_VFS_PATH=/data
 
