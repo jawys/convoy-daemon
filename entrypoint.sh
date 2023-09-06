@@ -11,18 +11,18 @@ CONVOY_SPEC_FILE="${DOCKER_PLUGINS_DIR}"/convoy.spec
 CONVOY_VFS_PATH=/data
 
 if [ ! -d "${DOCKER_PLUGINS_DIR}" ]; then
-  log "Missing '-v ${DOCKER_PLUGINS_DIR}:${DOCKER_PLUGINS_DIR}'"
+  log "Missing '--volume ${DOCKER_PLUGINS_DIR}:${DOCKER_PLUGINS_DIR}'"
   exit 1
 fi
 
 if [ ! -d "${CONVOY_SOCKET_DIR}" ]; then
-  log "Missing '-v ${CONVOY_SOCKET_DIR}:${CONVOY_SOCKET_DIR}'"
+  log "Missing '--volume ${CONVOY_SOCKET_DIR}:${CONVOY_SOCKET_DIR}'"
   exit 2
 fi
 
 if [ ! -d "${CONVOY_VFS_PATH}" ]; then
   log \
-    "Missing '-v CONVOY_NFS_VOL:${CONVOY_VFS_PATH}'" \
+    "Missing '--volume CONVOY_NFS_VOL:${CONVOY_VFS_PATH}'" \
     "See: https://docs.docker.com/storage/volumes/#create-a-service-which-creates-an-nfs-volume"
   exit 3
 fi
