@@ -22,7 +22,7 @@ fi
 
 if [ ! -d "${CONVOY_VFS_PATH}" ]; then
   log \
-    "Missing '--volume CONVOY_NFS_VOL:${CONVOY_VFS_PATH}'" \
+    "Missing CONVOY_NFS_VOL mounted at '${CONVOY_VFS_PATH}'." \
     "See: https://docs.docker.com/storage/volumes/#create-a-service-which-creates-an-nfs-volume"
   exit 3
 fi
