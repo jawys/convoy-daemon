@@ -77,7 +77,8 @@ install() {
 
   log "Please 'mount -t nfs' the convoy volumes at '${CONVOY_VFS_PATH}'..."
   log "Also check if things work after a reboot!"
-  log "You might need to copy lines from 'findmnt -tnfs4' into '/etc/fstab'."
+  log "You might need to copy lines from 'findmnt -tnfs4 | grep convoy' into '/etc/fstab'."
+  log "After your final setup, run 'systemctl enable --now convoy'."
 }
 
 install
