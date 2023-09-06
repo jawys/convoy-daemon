@@ -1,0 +1,79 @@
+#!/bin/bash
+set -euxo pipefail
+
+DOCKER_PLUGINS_DIR=/etc/docker/plugins
+
+CONVOY_SOCKET_DIR=/var/run/convoy
+CONVOY_SPEC_FILE="${DOCKER_PLUGINS_DIR}"/convoy.spec
+CONVOY_VERSION=v0.5.2
+CONVOY_VFS_PATH=/mnt/convoy
+
+INSTALL_DIR=/usr/local/bin
+
+SYSTEMD_DIR=/lib/systemd/system
+SYSTEMD_FILENAME=docker-volume-plugin-convoy
+SYSTEMD_SERVICE_FILE=${SYSTEMD_FILENAME}.service
+SYSTEMD_SOCKET_FILE=${SYSTEMD_FILENAME}.socket
+
+SYSTEMD_SERVICE="\
+[Unit]
+Description=Docker Volume Plugin Convoy
+Before=docker.service
+After=network.target ${SYSTEMD_SOCKET_FILE}
+Requires=${SYSTEMD_SOCKET_FILE} docker.service
+
+[Service]
+ExecStart=${INSTALL_DIR}/convoy daemon --drivers vfs --driver-opts vfs.path=${CONVOY_VFS_PATH}
+
+[Install]
+WantedBy=multi-user.target
+"
+SYSTEMD_SOCKET="\
+[Unit]
+Description=Docker Volume Plugin Convoy
+
+[Socket]
+ListenStream=${CONVOY_SOCKET_DIR}/convoy.sock
+
+[Install]
+WantedBy=sockets.target
+"
+
+log() {
+  printf "*** %s\n" "$@" >&2
+}
+
+install() {
+  if [ "$(id -u)" -ne 0 ]; then
+    log 'This script must be run by root.'
+    exit 1
+  fi
+
+  cd "$(mktemp -d)"
+
+  wget -qO- https://github.com/rancher/convoy/releases/download/"${CONVOY_VERSION}"/convoy.tar.gz |
+    tar xvz
+  sha1sum -c convoy/SHA1SUMS | cut -d: -f1 | xargs -II cp -v I "${INSTALL_DIR}"
+
+  if [ ! -d "${DOCKER_PLUGINS_DIR}" ]; then
+    mkdir -pv "${DOCKER_PLUGINS_DIR}"
+  fi
+
+  if [ ! -f "${CONVOY_SPEC_FILE}" ]; then
+    echo "unix://${CONVOY_SOCKET_DIR}/convoy.sock" >"${CONVOY_SPEC_FILE}"
+  fi
+
+  echo "${SYSTEMD_SERVICE}" >"${SYSTEMD_SERVICE_FILE}"
+  echo "${SYSTEMD_SOCKET}" >"${SYSTEMD_SOCKET_FILE}"
+  cp -v "${SYSTEMD_SERVICE_FILE}" "${SYSTEMD_SOCKET_FILE}" "${SYSTEMD_DIR}"
+
+  if ! dpkg-query --show nfs-common >/dev/null; then
+    apt-get install -y nfs-common
+  fi
+
+  log "Please 'mount -t nfs' the convoy volumes at '${CONVOY_VFS_PATH}'..."
+  log "Also check if things work after a reboot!"
+  log "You might need to copy lines from 'findmnt -tnfs4' into '/etc/fstab'."
+}
+
+install
