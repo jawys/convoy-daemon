@@ -51,14 +51,18 @@ install() {
 
   cd "$(mktemp -d)"
 
-  wget -qO- https://github.com/rancher/convoy/releases/download/"${CONVOY_VERSION}"/convoy.tar.gz |
-    tar xvz
+  log "Extracting 'convoy ${CONVOY_VERSION}'..."
+  wget -qO- https://github.com/rancher/convoy/releases/download/"${CONVOY_VERSION}"/convoy.tar.gz | tar xz
+
+  log "Validating binaries before copying to '${INSTALL_DIR}'..."
   sha1sum -c convoy/SHA1SUMS | cut -d: -f1 | xargs -II cp -v I "${INSTALL_DIR}"
 
+  log "Checking if '${DOCKER_PLUGINS_DIR}' is present..."
   if [ ! -d "${DOCKER_PLUGINS_DIR}" ]; then
     mkdir -pv "${DOCKER_PLUGINS_DIR}"
   fi
 
+  log "Checking if '${CONVOY_VFS_PATH}' is present..."
   if [ ! -d "${CONVOY_VFS_PATH}" ]; then
     mkdir -pv "${CONVOY_VFS_PATH}"
   fi
@@ -67,10 +71,12 @@ install() {
     echo "unix://${CONVOY_SOCKET_DIR}/convoy.sock" >"${CONVOY_SPEC_FILE}"
   fi
 
+  log "Setting up SYSTEMD files..."
   echo "${SYSTEMD_SERVICE}" >"${SYSTEMD_SERVICE_FILE}"
   echo "${SYSTEMD_SOCKET}" >"${SYSTEMD_SOCKET_FILE}"
   cp -v "${SYSTEMD_SERVICE_FILE}" "${SYSTEMD_SOCKET_FILE}" "${SYSTEMD_DIR}"
 
+  log "Checking if 'nfs-common' is installed..."
   if ! dpkg-query --show nfs-common >/dev/null; then
     apt-get install -y nfs-common
   fi
