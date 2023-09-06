@@ -59,6 +59,10 @@ install() {
     mkdir -pv "${DOCKER_PLUGINS_DIR}"
   fi
 
+  if [ ! -d "${CONVOY_VFS_PATH}" ]; then
+    mkdir -pv "${CONVOY_VFS_PATH}"
+  fi
+
   if [ ! -f "${CONVOY_SPEC_FILE}" ]; then
     echo "unix://${CONVOY_SOCKET_DIR}/convoy.sock" >"${CONVOY_SPEC_FILE}"
   fi
