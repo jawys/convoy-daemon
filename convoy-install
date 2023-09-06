@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euxo pipefail
+set -euo pipefail
 
 DOCKER_PLUGINS_DIR=/etc/docker/plugins
 
