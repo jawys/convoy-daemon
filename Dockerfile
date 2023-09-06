@@ -14,6 +14,8 @@ RUN <<EOF
     find . -delete -mindepth 1
 EOF
 
+WORKDIR /
+
 COPY entrypoint.sh /
 
 ENTRYPOINT [ "/entrypoint.sh" ]
